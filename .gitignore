@@ -1,5 +1,5 @@
 *.bin
-*.txt
+/word2vec/*.txt
 /code/runs
 /code/tmp
 *.data.npy
