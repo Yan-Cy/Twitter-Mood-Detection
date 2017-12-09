@@ -91,18 +91,23 @@ def batch_iter(data, batch_size, num_epochs, shuffle=True):
 
 def build_vocabulary(sentences):
     #model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/GoogleNews-vectors-negative300.bin', binary=True)
-    model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/gensim_glove_vectors.txt', binary=False)
+    sentences = [sent.split(' ') for sent in sentences]
+    model = gensim.models.KeyedVectors.load_word2vec_format('../word2vec/gensim_vectors.txt', binary=False)
     #model = gensim.models.Word2Vec(sentences, size=100, window=5, min_count=5, workers=4) 
     #print 'Vocabulary Size:', len(model.wv.syn0)
     max_document_length = 30
 
     x = np.zeros((len(sentences), max_document_length))
+    match_ratio = 0.0
     for i, sentence in enumerate(sentences):
+        num_word = 0.0
         for j, word in enumerate(sentence):
             if j >= max_document_length:
                 break
             #print type(word)
             if word in model.wv.vocab:
+                num_word += 1
                 x[i,j] = model.wv.vocab[word].index
-
+        match_ratio += num_word / len(sentence)
+    print 'Average sentence matching ratio', match_ratio / len(sentences)
     return x, model.wv.syn0
